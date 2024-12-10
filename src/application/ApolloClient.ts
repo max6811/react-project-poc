@@ -1,4 +1,4 @@
-import { ApolloClient, from, InMemoryCache } from "@apollo/client";
+import { ApolloClient, ApolloLink, createHttpLink, from, InMemoryCache } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { GraphQLFormattedError } from "graphql";
 
@@ -8,6 +8,7 @@ import {
 } from "../utils/constants/productRoutesConstant";
 import { HttpError } from "../utils/interfaces/Error";
 import { HTTP_STATUS } from "../utils/constants/HttpConstants";
+import { getApiUrl, getPublicUrl } from "../utils/environment";
 
 const handleGraphQLErrors = (
   graphQLErrors: ReadonlyArray<GraphQLFormattedError>
@@ -37,26 +38,25 @@ const errorLink = onError(({ graphQLErrors }) => {
   }
 });
 
-// const serverLink = createHttpLink({
-//   uri: getApiUrl(),
-//   credentials: "include",
-// });
+const serverLink = createHttpLink({
+  uri: getApiUrl(),
+  credentials: "include",
+});
 
-// const authLink = new ApolloLink((operation, forward) => {
-//   const token = store.getState().authSlice.token;
+const authLink = new ApolloLink((operation, forward) => {
+  const token = '1';
 
-//   operation.setContext({
-//     headers: {
-//       Authorization: token ? `Bearer ${token}` : "",
-//       origin: getPublicUrl(),
-//     },
-//   });
+  operation.setContext({
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+      origin: getPublicUrl(),
+    },
+  });
 
-//   return forward(operation);
-// });
+  return forward(operation);
+});
 
-// const linkChain = from([errorLink, authLink.concat(serverLink)]);
-const linkChain = from([errorLink]);
+const linkChain = from([errorLink, authLink.concat(serverLink)]);
 
 const apolloClient = new ApolloClient({
   link: linkChain,
