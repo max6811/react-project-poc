@@ -64,7 +64,6 @@ const TableCellReference: React.FC = () => {
     <div className='p-8 font-sans'>
       <h1 className='text-2xl font-bold mb-6'>Tabla Dinámica con Fórmulas</h1>
 
-      {/* Tabla */}
       <table className='table-auto border-collapse border border-gray-300 w-full mb-6'>
         <thead>
           <tr>
@@ -96,7 +95,6 @@ const TableCellReference: React.FC = () => {
         </tbody>
       </table>
 
-      {/* Input for formula */}
       <div className='mb-4'>
         <h2 className='text-lg font-semibold mb-2'>Escribe tu fórmula:</h2>
         <input
@@ -108,7 +106,6 @@ const TableCellReference: React.FC = () => {
         />
       </div>
 
-      {/* Result */}
       <div>
         {error ? (
           <p className='text-red-500 font-medium'>{error}</p>

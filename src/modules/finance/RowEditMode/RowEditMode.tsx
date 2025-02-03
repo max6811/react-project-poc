@@ -50,8 +50,8 @@ const RowEditMode: FC = () => {
   // Cancel edition
   const onRowEditCancel = () => {
     console.log("onRowEditCancel");
-    setEditingRow(''); // Terminar la edición sin guardar
-    setNewName(""); // Limpiar el valor del nuevo nombre
+    setEditingRow(''); 
+    setNewName(""); 
   };
 
   const bodyFormula = (rowData: Product) =>
