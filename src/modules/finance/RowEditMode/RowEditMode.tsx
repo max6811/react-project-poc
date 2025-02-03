@@ -21,12 +21,12 @@ const RowEditMode: FC = () => {
     { id: "2", name: "Product 2" },
     { id: "3", name: "Product 3" },
   ]);
-  const [editingRow, setEditingRow] = useState('');
+  const [editingRow, setEditingRow] = useState("");
   const [newName, setNewName] = useState("");
 
   // Start edition
   const onRowEditInit = (eventValues: InitEditEventObject) => {
-    console.log(eventValues)
+    console.log(eventValues);
     setEditingRow(eventValues.index);
     setNewName(eventValues.data.name);
   };
@@ -43,15 +43,15 @@ const RowEditMode: FC = () => {
       });
 
       setProducts(updatedProducts);
-      setEditingRow('');
+      setEditingRow("");
     }
   };
 
   // Cancel edition
   const onRowEditCancel = () => {
     console.log("onRowEditCancel");
-    setEditingRow(''); 
-    setNewName(""); 
+    setEditingRow("");
+    setNewName("");
   };
 
   const bodyFormula = (rowData: Product) =>
@@ -86,13 +86,9 @@ const RowEditMode: FC = () => {
   return (
     <div>
       <DataTable dataKey='id' editMode='row' value={products}>
-        <Column
-          field='name'
-          header='Nombre'
-          body={bodyFormula}
-        />
+        <Column field='name' header='Nombre' body={bodyFormula} />
 
-        <Column rowEditor={true} body={bodyEditButtons}/>
+        <Column rowEditor={true} body={bodyEditButtons} />
       </DataTable>
     </div>
   );

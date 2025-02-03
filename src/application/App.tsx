@@ -4,6 +4,7 @@ import GenerateFormula from "../modules/finance/GenerateFormula/GenerateFormula"
 import "./App.css";
 
 import reactLogo from "../assets/react.svg";
+import MentionFormula from "../modules/finance/MentionFormula/MentionFormula";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <div className='card'>
         {/* <ExcelDownload /> */}
         <AutoCompleteExample />
+        <MentionFormula />
         <br />
         <GenerateFormula />
       </div>

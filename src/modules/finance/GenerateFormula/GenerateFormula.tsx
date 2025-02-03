@@ -82,6 +82,7 @@ const GenerateFormula: FC = () => {
     inputValue: string,
     // rowData: TransactionTemplateAccount
   ) => {
+    console.log(inputValue)
     setFormula(inputValue);
 
     // Validate and evaluate formula
@@ -132,6 +133,7 @@ const GenerateFormula: FC = () => {
   const onRowEditInit = (eventValues: InitEditEventObject) => {
     console.log(eventValues.index);
     setEditingRow(eventValues.rowData._id);
+    setFormula(eventValues.rowData.formula)
   };
 
   const onRowEditSave = () => {
@@ -170,10 +172,11 @@ const GenerateFormula: FC = () => {
     );
 
   const bodyFormulaTemplate = (rowData: TransactionTemplateAccount) => {
+    
     return editingRow === rowData._id ? (
       <InputText
         type='text'
-        value={formula || rowData.formula}
+        value={formula}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           handleFormulaChange(e.target.value)
         }
