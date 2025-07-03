@@ -1,3 +1,25 @@
+@layer theme, base, utilities;
+@layer tailwind-base, primereact, tailwind-utilities;
+@import 'tailwindcss';
+
+/* IMPORTANT: In "styled" mode you must add the PrimeReact Theme here. Do NOT include in "unstyled" mode */
+@import 'primereact/resources/themes/lara-light-blue/theme.css' layer(primereact);
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(tailwind-base);
+@import 'tailwindcss/utilities.css' layer(tailwind-utilities);
+
+@layer base {
+  :root {
+    --transparent: transparent;
+    --color-primary: #258f05;
+  }
+}
+
+@theme {
+  --transparent: transparent;
+  --color-primary: #258f05;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
