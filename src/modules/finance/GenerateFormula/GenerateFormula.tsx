@@ -20,6 +20,7 @@ export interface TransactionTemplateAccount {
   currencies: string[];
   typeAmount: TypeAmountEnum | null;
   formula: string;
+  variables: string[];
   __typename: string;
 }
 
@@ -38,7 +39,8 @@ const GenerateFormula: FC = () => {
       currencies: [],
       typeAmount: TypeAmountEnum.CREDIT,
       formula: "",
-      __typename: "ListAccountsTransactionTemplateOutput",
+      variables: [],
+      __typename: "ListAccounts",
     },
     {
       _id: "678ff4f1320cc91be8a58f8b",
@@ -48,7 +50,8 @@ const GenerateFormula: FC = () => {
       currencies: ["USD Dólar estadounidense", "BOB Boliviano"],
       typeAmount: TypeAmountEnum.CREDIT,
       formula: "",
-      __typename: "ListAccountsTransactionTemplateOutput",
+      variables: [],
+      __typename: "ListAccounts",
     },
     {
       _id: "678ff4e7320cc91be8a58f7a",
@@ -58,9 +61,15 @@ const GenerateFormula: FC = () => {
       currencies: [],
       typeAmount: TypeAmountEnum.DEBIT,
       formula: "",
-      __typename: "ListAccountsTransactionTemplateOutput",
+      variables: [],
+      __typename: "ListAccounts",
     },
   ]);
+
+  const [formula, setFormula] = useState<string>("");
+  const [result, setResult] = useState<number | null>(null);
+  const [error, setError] = useState<string>("");
+  const [editingRow, setEditingRow] = useState("");
 
   const renderIcon = () => (
     <i className='pi pi-check' style={{ fontSize: "2rem" }}></i>
@@ -72,17 +81,11 @@ const GenerateFormula: FC = () => {
   const creditTemplate = (rowData: TransactionTemplateAccount) =>
     rowData.typeAmount === TypeAmountEnum.CREDIT ? renderIcon() : <></>;
 
-  // Estado para la fórmula
-  const [formula, setFormula] = useState<string>("");
-  const [result, setResult] = useState<number | null>(null);
-  const [error, setError] = useState<string>("");
-
-  // Maneja el cambio de la fórmula
   const handleFormulaChange = (
-    inputValue: string,
+    inputValue: string
     // rowData: TransactionTemplateAccount
   ) => {
-    console.log(inputValue)
+    console.log(inputValue);
     setFormula(inputValue);
 
     // Validate and evaluate formula
@@ -128,25 +131,45 @@ const GenerateFormula: FC = () => {
     </div>
   );
 
-  const [editingRow, setEditingRow] = useState("");
-
   const onRowEditInit = (eventValues: InitEditEventObject) => {
     console.log(eventValues.index);
     setEditingRow(eventValues.rowData._id);
-    setFormula(eventValues.rowData.formula)
+    setFormula(eventValues.rowData.formula);
   };
 
   const onRowEditSave = () => {
-    const updatedProducts = [...accounts];
+    const updatedAccounts = [...accounts];
+    let variablesOfFormula: string[] = [];
+    // Validate formula
+    if (validateFormula(formula)) {
+      variablesOfFormula = destructureFormula(formula);
+      console.log(variablesOfFormula);
+      // set array account formula variable
+      updatedAccounts.map((data) => {
+        if (data._id === editingRow) {
+          data.formula = formula;
+          data.variables = variablesOfFormula;
+        }
+      });
 
-    updatedProducts.map((data) => {
-      if (data._id === editingRow) {
-        data.formula = formula;
-      }
-    });
-    setAccounts(updatedProducts); // update main list
-    setEditingRow(""); // End edition and reset
-    setFormula(""); // reset formula
+      setAccounts(updatedAccounts); // update main list
+      setEditingRow(""); // End edition and reset
+      setFormula(""); // reset formula
+    } else {
+      setError("La formula tiene caracteres no validos.");
+    }
+  };
+
+  const validateFormula = (formula: string) => {
+    const regex = /^([F]\d+)(([+\-*/^()]|[\[\]{}]))*([F]\d+|\)|\]|\})$/;
+
+    return regex.test(formula);
+  };
+
+  const destructureFormula = (formula: string) => {
+    const variables: string[] = [...new Set(formula.match(/F\d+/g))];
+
+    return variables;
   };
 
   const onRowEditCancel = () => {
@@ -172,7 +195,6 @@ const GenerateFormula: FC = () => {
     );
 
   const bodyFormulaTemplate = (rowData: TransactionTemplateAccount) => {
-    
     return editingRow === rowData._id ? (
       <InputText
         type='text'
@@ -185,6 +207,7 @@ const GenerateFormula: FC = () => {
       <>{rowData.formula}</>
     );
   };
+
 
   return (
     <>
@@ -205,16 +228,7 @@ const GenerateFormula: FC = () => {
         />
       </DataTable>
 
-      {/* Result */}
-      <div>
-        {error ? (
-          <p className='text-red-500 font-medium'>{error}</p>
-        ) : (
-          <p className='text-green-600 font-medium'>
-            <strong>Resultado:</strong> {result}
-          </p>
-        )}
-      </div>
+      <div>{error && <p className='text-red-500 font-medium'>{error}</p>}</div>
     </>
   );
 };
